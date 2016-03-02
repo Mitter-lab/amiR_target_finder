@@ -43,7 +43,7 @@ def get_seq_lib(ref_seq, window):
             pos +=1
     return seq_lib
 
-def get_sub_seqs(ref_file, window):
+def get_sub_seqs(ref_seq, window):
     """
     Returns sub-sequences of length win that are present in all reference
     sequences as a list of tuples containing dictionaries
@@ -51,7 +51,7 @@ def get_sub_seqs(ref_file, window):
     cons_seq = [(subseq, {header,[position,]}),]
      
     """
-    ref_seq = get_ref.get_ref_f_strand(ref_file)
+
     cons_seq = []
     seq_lib=get_seq_lib(ref_seq, window)
     
@@ -61,14 +61,13 @@ def get_sub_seqs(ref_file, window):
     return cons_seq
 
 
-def get_most_sub_seqs(ref_file, window=21):
+def get_most_sub_seqs(ref_seq, window=21):
     """
     Returns the most common sub-sequences of length win
     """
     
     
     seq_present={}
-    ref_seq = get_ref.get_ref_f_strand(ref_file)
     seq_lib=get_seq_lib(ref_seq, window)
     
     cons_seq=[(0,{1:2})]
@@ -93,7 +92,58 @@ def get_most_sub_seqs(ref_file, window=21):
     return cons_seq
 
 
-def longest_com_seq(ref_seq, win = 21):
+def get_best_amiRs(ref_seq, amiRs):
+    """
+    Start at 21 - min length for a seq with an amiR (len = 21)
+    """
+    #amiRs is a list
+    if len(ref_seq)==0:
+        #END THE RECURSION and print the amiRs
+        print amiRs
+    else:    
+        cons_seqs = get_most_sub_seqs(ref_seq,5)
+        for i in cons_seqs:
+            print i
+            amiRs.append(i[0])
+            print amiRs
+            for key in i[1].keys():
+                print key
+                del ref_seq[key]
+                print ref_seq
+            get_best_amiRs(ref_seq, amiRs)
+            # CHECK IF CONS_seq has sub_seq that passes test
+            
+            #IF PASSES TEST BUT NOT COVERING ALL SEQS:
+                #REMOVE REFS FROM ANALYSIS AND START AGAIN
+                #Add amiR to AMIRs
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def longest_com_seq(ref_file, win = 21):
+    
+    
+    ref_seq = get_ref.get_ref_f_strand(ref_file)
+    
     max_len = 0 #max lenghth of conserved seq
     stop_iterating = 30 #round to stop iterating
     
