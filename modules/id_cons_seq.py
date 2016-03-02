@@ -6,6 +6,8 @@ Created on 2 Mar 2016
 #Copyright Stephen Fletcher
 
 import get_ref
+import amiR_finder
+import copy
 """
 Set conserved region sequence length (ie. 21nt)
 Script returns all sequences of that length that
@@ -92,7 +94,7 @@ def get_most_sub_seqs(ref_seq, window=21):
     return cons_seq
 
 
-def get_best_amiRs(ref_seq, amiRs, win):
+def get_best_amiRs(ref_seq, amiRs, win, recur_depth=1000):
     """
 
     """
@@ -101,58 +103,73 @@ def get_best_amiRs(ref_seq, amiRs, win):
         return amiRs
         
     elif len(ref_seq)==1:
-
         for key, value in ref_seq.iteritems():
-            amiRs.append(value[:win])
-        return amiRs
-        
+            targ_amiRNAs = amiR_finder.optimal_amiRNA(value)
+            if targ_amiRNAs != []:
+                amiRs.append(targ_amiRNAs[0])#select only the first optimal amiRNA
+                return amiRs
+            else:
+                print "no amiR found in {0}".format(key)
+                return amiRs
     else:
         cons_seqs = get_most_sub_seqs(ref_seq,win)
         for i in cons_seqs:
-            amiRs.append(i[0])
-            for key in i[1].keys():
-                if key in ref_seq: 
-                    del ref_seq[key]
-            return get_best_amiRs(ref_seq, amiRs, win)
-            
+            targ_amiRNAs = amiR_finder.optimal_amiRNA(i[0])
+            if targ_amiRNAs != []:
+                amiRs.append(targ_amiRNAs[0])#select only the first optimal amiRNA
+                for key in i[1].keys():
+                    if key in ref_seq: 
+                        del ref_seq[key]
+                    return get_best_amiRs(ref_seq, amiRs, win, recur_depth)
+        return False
 
 
-
-def best_amiR(ref_file, win=21):
+def best_amiR(ref_file, win=21, max_targ = 23):
     ref_seq = get_ref.get_ref_f_strand(ref_file)
-    print get_best_amiRs(ref_seq, [], win)
-    
-
-
-def longest_com_seq(ref_file, win = 21):
-    
-    
-    ref_seq = get_ref.get_ref_f_strand(ref_file)
-    
-    max_len = 0 #max lenghth of conserved seq
-    stop_iterating = 30 #round to stop iterating
-    
-    for i in range(stop_iterating):
-        cons_seqs = get_sub_seqs(ref_seq,i)
-        if len(cons_seqs) != 0:
-            max_len = i
+    while win < max_targ:
+        amiRs = get_best_amiRs(ref_seq, [], win)
+        if amiRs is False:
+            win+=1
         else:
+            print amiRs
             break
-    cons_seqs=cons_seqs = get_sub_seqs(ref_seq,max_len)
-    refs_covered=[]
-    best_cons_seqs = get_most_sub_seqs(ref_seq,win)
-    print '\nMax conserved seq. len. = {0} nt'.format(max_len)
-    print '\nConserved seqs:\n'
-    for i in cons_seqs:
-        print "Seq = {0}".format(i[0])
-    print '\n{0} seqs identified of length {1} are present in {2} reference sequences:'\
-    .format(len(best_cons_seqs ), win, len(best_cons_seqs[0][1]))
-    for seq in best_cons_seqs:
-        print "\nSeq = {0}\n".format(seq[0])
-        for key,value in seq[1].iteritems():
-            print "Reference = {0} at position {1}".format(key,value)
-            if key not in refs_covered:
-                refs_covered.append(key)
+    if win == max_targ: print "No set of amiRs found that cover all sequences"
+    
+    
+
+print best_amiR('/Users/steve/seq/Neena_lab/tospovirus/ref/tospo_Hanu_13_3_15/TSWV-M.txt')
+
+
+
+# def longest_com_seq(ref_file, win = 21):
+#     
+#     
+#     ref_seq = get_ref.get_ref_f_strand(ref_file)
+#     
+#     max_len = 0 #max lenghth of conserved seq
+#     stop_iterating = 30 #round to stop iterating
+#     
+#     for i in range(stop_iterating):
+#         cons_seqs = get_sub_seqs(ref_seq,i)
+#         if len(cons_seqs) != 0:
+#             max_len = i
+#         else:
+#             break
+#     cons_seqs=cons_seqs = get_sub_seqs(ref_seq,max_len)
+#     refs_covered=[]
+#     best_cons_seqs = get_most_sub_seqs(ref_seq,win)
+#     print '\nMax conserved seq. len. = {0} nt'.format(max_len)
+#     print '\nConserved seqs:\n'
+#     for i in cons_seqs:
+#         print "Seq = {0}".format(i[0])
+#     print '\n{0} seqs identified of length {1} are present in {2} reference sequences:'\
+#     .format(len(best_cons_seqs ), win, len(best_cons_seqs[0][1]))
+#     for seq in best_cons_seqs:
+#         print "\nSeq = {0}\n".format(seq[0])
+#         for key,value in seq[1].iteritems():
+#             print "Reference = {0} at position {1}".format(key,value)
+#             if key not in refs_covered:
+#                 refs_covered.append(key)
 
 
 def complement(sequence):

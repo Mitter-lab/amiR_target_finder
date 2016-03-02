@@ -8,6 +8,7 @@ def optimal_amiRNA(dna_sequence):
     """
     Id any seqs of 21 nt with T at nucleotide 1 and A or T at nucleotide 10
     Input is the target (not the complement)
+    optimal_RNAs --> [(amiRNA,*amiRNA)]
     """
 
     dna_sequence.upper()
@@ -20,9 +21,7 @@ def optimal_amiRNA(dna_sequence):
                 comp = complement(dna_sequence[pos:pos+21])
                 optimal_amiRNAs.append((dna_sequence[pos:pos+21],comp))
         pos+=1
-    print "\tamiRNA\t\t\tamiR*"
-    for amiRNA in optimal_amiRNAs:
-        print amiRNA 
+    return optimal_amiRNAs 
 
 def complement(seq):
     """Provides the complement in the 5' - 3' direction
