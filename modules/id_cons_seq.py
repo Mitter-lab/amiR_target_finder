@@ -103,9 +103,13 @@ def longest_com_seq(ref_seq, win = 21):
             max_len = i
         else:
             break
+    cons_seqs=cons_seqs = get_sub_seqs(ref_seq,max_len)
     refs_covered=[]
     best_cons_seqs = get_most_sub_seqs(ref_seq,win)
     print '\nMax conserved seq. len. = {0} nt'.format(max_len)
+    print '\nConserved seqs:\n'
+    for i in cons_seqs:
+        print "Seq = {0}".format(i[0])
     print '\n{0} seqs identified of length {1} are present in {2} reference sequences:'\
     .format(len(best_cons_seqs ), win, len(best_cons_seqs[0][1]))
     for seq in best_cons_seqs:
@@ -113,7 +117,6 @@ def longest_com_seq(ref_seq, win = 21):
         for key,value in seq[1].iteritems():
             print "Reference = {0} at position {1}".format(key,value)
             if key not in refs_covered:
- 
                 refs_covered.append(key)
 
 
