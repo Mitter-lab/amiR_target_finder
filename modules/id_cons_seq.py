@@ -113,28 +113,15 @@ def get_best_amiRs(ref_seq, amiRs, win):
             for key in i[1].keys():
                 if key in ref_seq: 
                     del ref_seq[key]
-            return get_best_amiRs(ref_seq, amiRs)
+            return get_best_amiRs(ref_seq, amiRs, win)
             
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def best_amiR(ref_file, win=21):
+    ref_seq = get_ref.get_ref_f_strand(ref_file)
+    print get_best_amiRs(ref_seq, [], win)
+    
 
 
 def longest_com_seq(ref_file, win = 21):
