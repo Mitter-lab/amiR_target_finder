@@ -137,9 +137,5 @@ def complement(sequence):
     complement(str) --> str
     """
     d = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
-    return DNA(''.join(d[c] if c in d else c for c in reversed(self)))
-
-
-
-
+    return ''.join(d[c] if c in d else c for c in reversed(sequence))
 

@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/bin/python
 # encoding: utf-8
 '''
 amiR_target_finder -- shortdesc
@@ -7,18 +7,19 @@ amiR_target_finder is a description
 
 It defines classes_and_methods
 
-@author:     user_name
+@author:     sfletc
 
 @copyright:  2016 organization_name. All rights reserved.
 
-@license:    license
+@license:    MIT
 
-@contact:    user_email
+@contact:    s.fletcher@uq.edu.au
 @deffield    updated: Updated
 '''
 
 import sys
 import os
+import modules.amiR_finder as amiR
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
@@ -60,8 +61,7 @@ def main(argv=None): # IGNORE:C0111
   Created by user_name on %s.
   Copyright 2016 organization_name. All rights reserved.
 
-  Licensed under the Apache License 2.0
-  http://www.apache.org/licenses/LICENSE-2.0
+  Licensed under the MIT License 
 
   Distributed on an "AS IS" basis without warranties
   or conditions of any kind, either express or implied.
