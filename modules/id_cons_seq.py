@@ -86,36 +86,34 @@ def get_most_sub_seqs(ref_seq, window=21):
             for key in occurences.keys(): 
                 seq_present[key]=1
  
- 
-    print 'Most conserved k-mer present in {0} reference sequences'\
-    .format(len(seq_present))
+    if cons_seq==[(0,{1:2})]:
+        rand_header_seq = ref_seq.popitem()
+        cons_seq = [(rand_header_seq[1][:window],{rand_header_seq[0]:0})]
     return cons_seq
 
 
-def get_best_amiRs(ref_seq, amiRs):
+def get_best_amiRs(ref_seq, amiRs, win):
     """
-    Start at 21 - min length for a seq with an amiR (len = 21)
+
     """
-    #amiRs is a list
+
     if len(ref_seq)==0:
-        #END THE RECURSION and print the amiRs
-        print amiRs
-    else:    
-        cons_seqs = get_most_sub_seqs(ref_seq,5)
+        return amiRs
+        
+    elif len(ref_seq)==1:
+
+        for key, value in ref_seq.iteritems():
+            amiRs.append(value[:win])
+        return amiRs
+        
+    else:
+        cons_seqs = get_most_sub_seqs(ref_seq,win)
         for i in cons_seqs:
-            print i
             amiRs.append(i[0])
-            print amiRs
             for key in i[1].keys():
-                print key
-                del ref_seq[key]
-                print ref_seq
-            get_best_amiRs(ref_seq, amiRs)
-            # CHECK IF CONS_seq has sub_seq that passes test
-            
-            #IF PASSES TEST BUT NOT COVERING ALL SEQS:
-                #REMOVE REFS FROM ANALYSIS AND START AGAIN
-                #Add amiR to AMIRs
+                if key in ref_seq: 
+                    del ref_seq[key]
+            return get_best_amiRs(ref_seq, amiRs)
             
 
 
