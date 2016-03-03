@@ -1,6 +1,6 @@
 # amiR_target_finder
 
-amiR_target_finder identifies minimum sets of artificial micoRNA/s that can target all sequences in a FASTA format reference seqeunce file.
+amiR_target_finder identifies a minimum set of artificial micoRNA/s (and their star strands) that can target all sequences in a FASTA format reference seqeunce file.
 
 <code>amiR_target_finder [-h] [-min_win MIN_WIN] [-max_win MAX_WIN] [-V]
                           input_file
