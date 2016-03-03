@@ -170,14 +170,14 @@ def best_amiR(ref_file, win=21, max_targ = 30):
         ref_seq = get_ref.get_ref_f_strand(ref_file) #fix this
         answer = get_best_amiRs(ref_seq, amiRs, win)
         print "win = {0}".format(win)
-        if answer is False: print "Nothing"
+        if answer is False: print "No amiRNA found"
         else: 
             print "no of amiRs = {0}".format(len(answer))
             if len(answer)<min_amiRNAs:
                 min_amiRNAs = len(answer)
                 best_set = answer
         win+=1
-    print "\nRecommended amiRNAs/*amiRNAs are:\n"
+    print "\nRecommended amiRNAs/amiRNA*s are:\n"
     for i in best_set: print i 
     test_set = []
     for i in best_set: test_set.append(i[1])
