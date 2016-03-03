@@ -7,7 +7,7 @@ Created on 2 Mar 2016
 
 import get_ref
 import amiR_finder
-import copy
+
 """
 Set conserved region sequence length (ie. 21nt)
 Script returns all sequences of that length that
@@ -67,6 +67,7 @@ def get_most_sub_seqs(ref_seq, window=21):
     """
     Returns the most common sub-sequences of length win
     """
+    #TODO: remove position recording
     
     
     seq_present={}
@@ -89,14 +90,19 @@ def get_most_sub_seqs(ref_seq, window=21):
                 seq_present[key]=1
  
     if cons_seq==[(0,{1:2})]:
+        #need to find real amiR here
         rand_header_seq = ref_seq.popitem()
-        cons_seq = [(rand_header_seq[1][:window],{rand_header_seq[0]:0})]
+        #TODO: this is really inefficient - must fix
+        cons_seq = [(amiR_finder.optimal_amiRNA(rand_header_seq[1])[0][1],
+                     {rand_header_seq[0]:0})]
     return cons_seq
 
 
-def get_best_amiRs(ref_seq, amiRs, win, recur_depth=1000):
+def get_best_amiRs(ref_seq, amiRs, win):
     """
-
+    Recursive function that attempts to find the least amount of amiRNAs for a 
+    given window size that target all sequences.  Returns Fasle if this can't be 
+    done, or returns a Set of (amiR/*amiR) tuples
     """
 
     if len(ref_seq)==0:
@@ -106,7 +112,7 @@ def get_best_amiRs(ref_seq, amiRs, win, recur_depth=1000):
         for key, value in ref_seq.iteritems():
             targ_amiRNAs = amiR_finder.optimal_amiRNA(value)
             if targ_amiRNAs != []:
-                amiRs.append(targ_amiRNAs[0])#select only the first optimal amiRNA
+                amiRs.add(targ_amiRNAs[0])#select only the first optimal amiRNA
                 return amiRs
             else:
                 print "no amiR found in {0}".format(key)
@@ -115,62 +121,71 @@ def get_best_amiRs(ref_seq, amiRs, win, recur_depth=1000):
         cons_seqs = get_most_sub_seqs(ref_seq,win)
         for i in cons_seqs:
             targ_amiRNAs = amiR_finder.optimal_amiRNA(i[0])
-            if targ_amiRNAs != []:
-                amiRs.append(targ_amiRNAs[0])#select only the first optimal amiRNA
-                for key in i[1].keys():
-                    if key in ref_seq: 
-                        del ref_seq[key]
-                    return get_best_amiRs(ref_seq, amiRs, win, recur_depth)
+            if targ_amiRNAs !=[]: break
+
+        if targ_amiRNAs != []:
+            amiRs.add(targ_amiRNAs[0])#select only the first optimal amiRNA
+            for key in cons_seqs[0][1].keys():
+                if key in ref_seq:
+                    del ref_seq[key]
+            return get_best_amiRs(ref_seq, amiRs, win)
         return False
 
 
-def best_amiR(ref_file, win=21, max_targ = 23):
+def check_results(amiRNA_list, ref_file):
+    """
+    Confirm the is an amiRNA for all headers in ref_seq
+    """
+    
+    ref_dict = get_ref.get_ref_f_strand(ref_file)
+
+    headers_included=set()
+    for amiRNA in amiRNA_list:
+        for header, seq in ref_dict.iteritems():
+            pos = 0
+            while pos < (len(seq)-len(amiRNA)+1):  
+                sub_seq = seq[pos:pos+len(amiRNA)]
+
+                if sub_seq == amiRNA:
+                    
+                    headers_included.add(header)
+                pos+=1
+                
+    return len(ref_dict.keys()) == len(headers_included)
+
+
+def best_amiR(ref_file, win=21, max_targ = 30):
+    """
+    Iterates from win to max_targ and finds the minimal amiRNA set
+    to target all sequences
+    """
+    #TODO: if can't find anything - do something
+    
     ref_seq = get_ref.get_ref_f_strand(ref_file)
+    min_amiRNAs = 10000000
+    print '-'*50
+    print '{0} reference sequences loaded'.format(len(ref_seq))
     while win < max_targ:
-        amiRs = get_best_amiRs(ref_seq, [], win)
-        if amiRs is False:
-            win+=1
-        else:
-            print amiRs
-            break
-    if win == max_targ: print "No set of amiRs found that cover all sequences"
+        amiRs=set()
+        ref_seq = get_ref.get_ref_f_strand(ref_file) #fix this
+        answer = get_best_amiRs(ref_seq, amiRs, win)
+        print "win = {0}".format(win)
+        if answer is False: print "Nothing"
+        else: 
+            print "no of amiRs = {0}".format(len(answer))
+            if len(answer)<min_amiRNAs:
+                min_amiRNAs = len(answer)
+                best_set = answer
+        win+=1
+    print "\nRecommended amiRNAs/*amiRNAs are:\n"
+    for i in best_set: print i 
+    test_set = []
+    for i in best_set: test_set.append(i[1])
+    print "\nTest all seqs targeted = {0}".format(check_results(test_set, 
+                                                                ref_file))
+    print '-'*50  
     
     
-
-print best_amiR('/Users/steve/seq/Neena_lab/tospovirus/ref/tospo_Hanu_13_3_15/TSWV-M.txt')
-
-
-
-# def longest_com_seq(ref_file, win = 21):
-#     
-#     
-#     ref_seq = get_ref.get_ref_f_strand(ref_file)
-#     
-#     max_len = 0 #max lenghth of conserved seq
-#     stop_iterating = 30 #round to stop iterating
-#     
-#     for i in range(stop_iterating):
-#         cons_seqs = get_sub_seqs(ref_seq,i)
-#         if len(cons_seqs) != 0:
-#             max_len = i
-#         else:
-#             break
-#     cons_seqs=cons_seqs = get_sub_seqs(ref_seq,max_len)
-#     refs_covered=[]
-#     best_cons_seqs = get_most_sub_seqs(ref_seq,win)
-#     print '\nMax conserved seq. len. = {0} nt'.format(max_len)
-#     print '\nConserved seqs:\n'
-#     for i in cons_seqs:
-#         print "Seq = {0}".format(i[0])
-#     print '\n{0} seqs identified of length {1} are present in {2} reference sequences:'\
-#     .format(len(best_cons_seqs ), win, len(best_cons_seqs[0][1]))
-#     for seq in best_cons_seqs:
-#         print "\nSeq = {0}\n".format(seq[0])
-#         for key,value in seq[1].iteritems():
-#             print "Reference = {0} at position {1}".format(key,value)
-#             if key not in refs_covered:
-#                 refs_covered.append(key)
-
 
 def complement(sequence):
     """Provides the complement in the 5' - 3' direction
