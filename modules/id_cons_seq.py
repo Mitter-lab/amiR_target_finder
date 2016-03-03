@@ -178,7 +178,10 @@ def best_amiR(ref_file, win=21, max_targ = 30):
                 best_set = answer
         win+=1
     print "\nRecommended amiRNAs/amiRNA*s are:\n"
-    for i in best_set: print i 
+    count = 1
+    for i in best_set: 
+        print "{0}. {1}".format(count, i)
+        count+=1 
     test_set = []
     for i in best_set: test_set.append(i[1])
     print "\nTest all seqs targeted = {0}".format(check_results(test_set, 
