@@ -10,7 +10,7 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>amiRNA Target Finder by Mitter-lab</title>
+    <title>amiRNA Target Finder - Mitter Lab</title>
   </head>
 
   <body>
@@ -19,7 +19,7 @@
 
         <header>
           <h1>amiRNA Target Finder</h1>
-          <h2>Idenitfy a minimum set of amiRNAs for a set of reference seqeunces</h2>
+          <h2>Idenitfy a minimum set of amiRNAs to target a complete set of reference sequences</h2>
         </header>
 
         <section id="downloads" class="clearfix">
@@ -34,34 +34,27 @@
           <h1>
 <a id="amir_target_finder" class="anchor" href="#amir_target_finder" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>amiR_target_finder</h1>
 
-<p>amiR_target_finder identifies a minimum set of artificial micoRNA/s (and their star strands) that can target all sequences in a FASTA format reference seqeunce file.</p>
+<p><br>amiR target finder identifies a minimum set of artificial micoRNA/s (and their star strands) that can target all sequences in a FASTA format reference seqeunce file.
+<br><br>Developed by Stephen Fletcher @ the laboratory of Assoc. Prof. Neena Mitter, University of Queensland
 
-<p><code>amiR_target_finder [-h] [-min_win MIN_WIN] [-max_win MAX_WIN] [-V]
-                          input_file</code></p>
+</p>
 
-<p>amiR_target_finder</p>
+<p><h3>Usage:</h3><br>
+    
+<code>amiR_target_finder input_file [-min_win] [-max_win]</code>
 
-<p>Created by Stephen Fletcher on 2016-03-02.
-  Copyright 2016 Stephen Fletcher. All rights reserved.</p>
 
-<p>Licensed under the MIT License </p>
+<p><br>Positional arguments:<br><br>
 
-<p>Distributed on an "AS IS" basis without warranties
-  or conditions of any kind, either express or implied.</p>
+<code>input_file</code> : FASTA file containing reference sequences</p>
 
-<p>USAGE</p>
-
-<p>positional arguments:
-  input_file            FASTA file containing reference sequences</p>
-
-<p>optional arguments:
-  -h, --help            show this help message and exit
-  -min_win MIN_WIN, --min_win MIN_WIN
-                        Min. window size to iterate from
-  -max_win MAX_WIN, --max_win MAX_WIN
-                        Max. window size to iterate to
-  -V, --version         show program's version number and exit
-scmb-bcarr05m:amiR_target_finder steve$ </p>
+<p><br>Optional arguments:<br><br>
+  <code>-h </code>: show this help message and exit<br>
+  <code>-min_win </code>: Min. window size to iterate from<br>
+  <code>-max_win </code>: Max. window size to iterate to<br>
+  <code>-V </code>: show program's version number and exit<br>
+</p>
+<br><img src="images/uqLogo.gif" alt="UQ logo" class="inline">
         </section>
 
         <footer>
