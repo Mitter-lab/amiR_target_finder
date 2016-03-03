@@ -28,4 +28,4 @@ optional arguments:
   -max_win MAX_WIN, --max_win MAX_WIN
                         Max. window size to iterate to
   -V, --version         show program's version number and exit
-scmb-bcarr05m:amiR_target_finder steve$ </code>
+scmb-bcarr05m:amiR_target_finder steve$  </code>
