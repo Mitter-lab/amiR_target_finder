@@ -18,6 +18,7 @@ amiR_target_finder
 USAGE
 
 positional arguments:
+  
   input_file            FASTA file containing reference sequences
 
 optional arguments:
